@@ -41,10 +41,15 @@ jobs:
       - name: Build
         working-directory: MRP
         run: pnpm build
+      - name: Prepare Pages site
+        run: |
+          rm -rf site
+          mkdir -p site/MRP
+          cp -R MRP/dist/. site/MRP/
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: MRP/dist
+          path: site
 
   deploy:
     environment:
