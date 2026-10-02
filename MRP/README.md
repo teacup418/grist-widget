@@ -39,3 +39,5 @@ If you are developing a production application, we recommend using TypeScript wi
 5. 在 [src/grist.js](src/grist.js) 的 `BOM_TABLE_ID` 中填写产品 BOM 表的内部 ID。它不是页面上显示的标题，可通过 Grist API 的 `listTables()` 或开发者工具确认。当前产品 BOM 表的 ID 是 `BOM`，引用主表 ID 是 `IC_DATA`。
 
 部件通过 `grist.ready` 请求完整文档访问权限，通过 `grist.onRecord` 跟随当前选中行，并用 `grist.docApi.fetchTable` 读取产品 BOM 表。未嵌入 Grist 时会使用内置演示数据，方便本地开发。
+
+GitHub Pages 地址：`https://teacup418.github.io/grist-widget/MRP/`
