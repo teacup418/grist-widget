@@ -1,16 +1,4 @@
-# teacup418 GitHub Projects
-
-本仓库用于保存多个独立项目。
-
-## MRP
-
-产品 BOM 的 Grist 自定义部件位于 [MRP](MRP/)。
-
-- 本地开发：`cd MRP && pnpm install && pnpm dev`
-- 构建：`cd MRP && pnpm build`
-- GitHub Pages：`https://teacup418.github.io/grist-widget/MRP/`
-
-GitHub Actions 会在 `MRP/` 发生变更并推送到 `main` 后自动执行 lint、构建和 GitHub Pages 部署。# React + Vite
+# React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
