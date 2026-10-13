@@ -28,6 +28,14 @@ select { background: #fffdf8; border: 1px solid #cac7bd; color: #17211f; font: i
 .notice.error { background: #fff0ed; color: #a5412a; }
 .notice.warning { background: #fff6dc; color: #85651c; }
 .schema-note { color: #89908b; font: 11px/1.4 var(--mono); margin-top: 18px; }
+.plan-card { background: #17211f; color: #fffdf8; margin-top: 42px; padding: 24px 28px; }
+.plan-card .eyebrow { color: #e8b86a; }
+.plan-values { display: flex; gap: 64px; }
+.plan-values div { display: flex; flex-direction: column; gap: 4px; }
+.plan-values span { color: #aeb8b3; font-size: 12px; }
+.plan-values strong { font: 700 28px/1.1 var(--heading); }
+.panel-description { color: #89908b; font-size: 13px; margin: 8px 0 0; }
+.ant-table-wrapper { margin-top: 18px; }
 @media (max-width: 620px) {
   .bom-app { padding: 28px 18px; }
   .app-header { align-items: flex-start; flex-direction: column; }
@@ -35,4 +43,6 @@ select { background: #fffdf8; border: 1px solid #cac7bd; color: #17211f; font: i
   select { box-sizing: border-box; width: 100%; }
   .row-count { margin-left: 0; }
   .result-panel { padding: 20px 16px; }
+  .plan-card { margin-top: 30px; padding: 20px; }
+  .plan-values { gap: 28px; }
 }
