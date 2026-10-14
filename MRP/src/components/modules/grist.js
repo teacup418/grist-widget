@@ -41,8 +41,9 @@ export function connectToGrist({ onBomRows, onRecord, onError }) {
       })
       .catch(onError)
     window.grist.onRecord((record) => {
-      onRecord(window.grist.mapColumnNames(record) ?? record)
-    })
+        const mappedRecord = window.grist.mapColumnNames(record) ?? {}
+        onRecord({ ...record, ...mappedRecord })
+      })
   } catch (error) {
     onError(error)
   }

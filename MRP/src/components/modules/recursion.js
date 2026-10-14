@@ -12,8 +12,8 @@ export function displayValue(value, referenceNames = new Map()) {
 
 function readEdges(rows, referenceNames) {
   return rows.flatMap((row) => {
-    const product = displayValue(row.A ?? row.产品 ?? row.Product, referenceNames)
-    const component = displayValue(row.B ?? row.原料 ?? row.材料 ?? row.Component, referenceNames)
+    const product = displayValue(row.A ?? row.产品 ?? row.Product ?? row.项目, referenceNames)
+    const component = displayValue(row.B ?? row.原料 ?? row.材料 ?? row.Component ?? row.需求, referenceNames)
     const quantity = Number(row.C ?? row.数量 ?? row.Quantity)
     if (!product || !component || !Number.isFinite(quantity) || quantity <= 0) return []
     return [{ product, component, quantity }]
@@ -23,10 +23,8 @@ function readEdges(rows, referenceNames) {
 export function explodeBom(rows, rootProduct, rootQuantity, referenceNames) {
   const edges = readEdges(rows, referenceNames)
   const children = new Map()
-  const parents = new Map()
   edges.forEach((edge) => {
     children.set(edge.product, [...(children.get(edge.product) ?? []), edge])
-    parents.set(edge.component, [...(parents.get(edge.component) ?? []), edge])
   })
   const totals = new Map()
   const warnings = []
@@ -66,39 +64,48 @@ export function explodeBom(rows, rootProduct, rootQuantity, referenceNames) {
       key,
       item: product,
       quantity: requiredQuantity,
-      children: productChildren
-        .map(({ component, quantity: perUnit }) => makeTree(component, requiredQuantity * perUnit, [...path, product]))
-        .filter(Boolean),
     }
+    const childRows = productChildren
+      .map(({ component, quantity: perUnit }) => makeTree(component, requiredQuantity * perUnit, [...path, product]))
+      .filter(Boolean)
+    if (childRows.length) node.children = childRows
     if (!productChildren.length && !seenLeaves.has(product)) {
       seenLeaves.add(product)
       leafRows.push({ key: `leaf-${product}`, item: product, quantity: totals.get(product)?.quantity ?? requiredQuantity })
     }
     return node
   }
+  let rootNode = null
   if (rootProduct && quantity > 0) {
-    const rootNode = makeTree(rootProduct, quantity)
+    rootNode = makeTree(rootProduct, quantity)
     tree.push(...(rootNode?.children ?? []))
   }
 
-  const leafDependencies = leafRows.map((leaf) => {
-    const root = { ...leaf, children: [] }
-    const visited = new Set([leaf.item])
-    function addParents(current, target) {
-      ;(parents.get(current) ?? []).forEach(({ product, quantity: perUnit }) => {
-        if (visited.has(product)) return
-        visited.add(product)
-        const parent = {
-          key: `${target.key}-${product}`,
-          item: product,
-          quantity: perUnit,
-          children: [],
-        }
-        target.children.push(parent)
-        addParents(product, parent)
-      })
+  const leafConsumers = new Map()
+  function collectLeafConsumers(node, parent = null) {
+    if (!node.children) {
+      if (parent && parent.item !== rootProduct) {
+        const consumers = leafConsumers.get(node.item) ?? new Map()
+        consumers.set(parent.item, (consumers.get(parent.item) ?? 0) + node.quantity)
+        leafConsumers.set(node.item, consumers)
+      }
+      return
     }
-    addParents(leaf.item, root)
+    node.children.forEach((child) => collectLeafConsumers(child, node))
+  }
+  if (rootNode) collectLeafConsumers(rootNode)
+
+  const leafDependencies = [...leafConsumers.entries()].map(([item, consumers]) => {
+    const root = {
+      key: `leaf-${item}`,
+      item,
+      quantity: totals.get(item)?.quantity ?? 0,
+    }
+    root.children = [...consumers.entries()].map(([consumer, quantity]) => ({
+      key: `${root.key}-${consumer}`,
+      item: consumer,
+      quantity,
+    }))
     return root
   })
 

@@ -36,6 +36,10 @@ select { background: #fffdf8; border: 1px solid #cac7bd; color: #17211f; font: i
 .plan-values strong { font: 700 28px/1.1 var(--heading); }
 .panel-description { color: #89908b; font-size: 13px; margin: 8px 0 0; }
 .ant-table-wrapper { margin-top: 18px; }
+.table-actions { display: flex; gap: 8px; margin-top: 16px; }
+.table-actions button { background: #fffdf8; border: 1px solid #cac7bd; color: #68716d; cursor: pointer; font: inherit; padding: 6px 12px; }
+.table-actions button:hover:not(:disabled) { border-color: #e05c35; color: #e05c35; }
+.table-actions button:disabled { cursor: not-allowed; opacity: .45; }
 @media (max-width: 620px) {
   .bom-app { padding: 28px 18px; }
   .app-header { align-items: flex-start; flex-direction: column; }
